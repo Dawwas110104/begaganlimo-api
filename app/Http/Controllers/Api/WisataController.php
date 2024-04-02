@@ -42,19 +42,37 @@ class WisataController extends Controller
      */
     public function store(Request $request)
     {
+        $postObj = new Wisata();
+
+        $gambar = '';
+        $path = '';
+        if($request->hasFile('image')) {
+            $filename = $request->file('image')->getClientOriginalName(); // get the file name
+            $getfilenamewitoutext = pathinfo($filename, PATHINFO_FILENAME); // get the file name without extension
+            $getfileExtension = $request->file('image')->getClientOriginalExtension(); // get the file extension
+            $createnewFileName = time().'_'.str_replace(' ','_', $getfilenamewitoutext).'.'.$getfileExtension; // create new random file name
+            $img_path = $request->file('image')->storeAs('public/post_img', $createnewFileName); // get the image path
+            $postObj->image = $createnewFileName; // pass file name with column
+
+            $gambar = $createnewFileName;
+            $path = $img_path;
+        }
+
         $content = Wisata::create([
             'nama' => $request->nama,
             'tanggal' => $request->tanggal,
             'harga' => $request->harga,
             'telp' => $request->telp,
             'desc' => $request->desc,
-            'gambar' => $request->gambar,
+            'gambar' => $gambar,
+
         ]);
 
         return response()->json([
             'response_code' => 200,
             'message' => 'Success',
-            'content' => $content
+            'content' => $content,
+            'img_path' => $path
         ]);
     }
 

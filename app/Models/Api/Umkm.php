@@ -10,6 +10,7 @@ class Umkm extends Model
     use HasFactory;
     protected $fillable = [
         'nama',
+        'penjual',
         'tanggal',
         'harga',
         'telp',

@@ -16,6 +16,7 @@ class CreateUmkmsTable extends Migration
         Schema::create('umkms', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('penjual');
             $table->date('tanggal');
             $table->integer('harga');
             $table->bigInteger('telp');
