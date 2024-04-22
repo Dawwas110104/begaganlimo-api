@@ -42,20 +42,41 @@ class WisataController extends Controller
      */
     public function store(Request $request)
     {
-        $content = Wisata::create([
-            'nama' => $request->nama,
-            'tanggal' => $request->tanggal,
-            'harga' => $request->harga,
-            'telp' => $request->telp,
-            'desc' => $request->desc,
-            'gambar' => $request->gambar,
+        // return response()->json($request);
+
+         $request->validate([
+            'file' => 'required|mimes:png,jpg,jpeg|max:2048'
         ]);
 
-        return response()->json([
-            'response_code' => 200,
-            'message' => 'Success',
-            'content' => $content
-        ]);
+        try{
+            $name = now()->timestamp."_{$request->file->getClientOriginalName()}";
+            $path = $request->file('file')->storeAs('files', $name, 'public');
+
+            $content = Wisata::create([
+                'nama' => $request->nama,
+                'tanggal' => $request->tanggal,
+                'harga' => $request->harga,
+                'telp' => $request->telp,
+                'desc' => $request->desc,
+                'gambar' => $path,
+            ]);
+
+            return response()->json([
+                'response_code' => 200,
+                'message' => 'Success',
+                'content' => $content
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'response_code' => 402,
+                'message' => 'Failed',
+                'content' => $e
+            ]);
+        }
+
+
+
+
     }
 
     /**
